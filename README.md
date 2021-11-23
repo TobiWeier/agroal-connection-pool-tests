@@ -2,9 +2,9 @@
 
 ## preconditions
 
-1. git
-2. minikube installation
-3. helm installation
+- git
+- minikube installation
+- helm installation
 
 ## steps to reproduce
 
