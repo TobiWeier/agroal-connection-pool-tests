@@ -2,17 +2,24 @@
 
 ## preconditions
 
-1. minikube installation
-2. helm installation
+1. git
+2. minikube installation
+3. helm installation
 
-## steps to start
+## steps to reproduce
 
-    $ minikube start --cpus 6 --memory 16384
-    $ rm -rf /tmp/postgres-operator
-    $ git clone git@github.com:zalando/postgres-operator.git /tmp/postgres-operator
-    $ helm install postgres-operator /tmp/postgres-operator/charts/postgres-operator
-    $ rm -rf /tmp/agroal-connection-pool-tests
-    $ git clone git@github.com:TobiWeier/agroal-connection-pool-tests.git /tmp/agroal-connection-pool-tests
-    $ cd /tmp/agroal-connection-pool-tests
-    $ kubectl create -f dbcluster.yml
-    $ kubectl create -f pooltest.yml
+1. Start database cluster and pool test application
+
+    $ ./run-test.sh
+
+2. Check metrics with 
+
+    $ watch -n 2 kubectl exec -it pooltest -- "curl http://localhost:8080/q/metrics | grep -E '^application'"
+
+3. Check database cluster status with
+
+    $ kubectl exec -it connection-pool-test-0 -- patronictl list
+
+4. Kill database leader pod with
+
+    $ kubectl delete pod connection-pool-test-0
