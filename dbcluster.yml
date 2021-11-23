@@ -7,11 +7,6 @@ spec:
   teamId: "connection-pool"
   databases:
     test: test
-  enable_pod_antiaffinity: true
-  enable_pod_disruption_budget: false
-  enableMasterLoadBalancer: false
-  enableReplicaLoadBalancer: false
-  resource_check_timeout: "15m"
   numberOfInstances: 2
   patroni:
     initdb:
