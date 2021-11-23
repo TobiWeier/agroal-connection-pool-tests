@@ -1,0 +1,18 @@
+apiVersion: "acid.zalan.do/v1"
+kind: postgresql
+metadata:
+  name: connection-pool-test
+  namespace: default
+spec:
+  teamId: "connection-pool"
+  volume:
+    size: 1Gi
+  numberOfInstances: 2
+  users:
+    test:  
+    - superuser
+    - createdb
+  databases:
+    test: test
+  postgresql:
+    version: "12"

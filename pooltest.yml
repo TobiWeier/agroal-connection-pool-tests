@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: pooltest
+  name: pooltest
+spec:
+  containers:
+  - args:
+    - bash
+    - -c
+    - curl https://raw.githubusercontent.com/TobiWeier/agroal-connection-pool-tests/main/build-and-start.sh -o build-and-start.sh && chmod a+x build-and-start.sh && ./build-and-start.sh
+    image: maven
+    name: pooltest
+    env:
+      - name: QUARKUS_DATASOURCE_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: test.connection-pool-test.credentials.postgresql.acid.zalan.do
+            key: password
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
