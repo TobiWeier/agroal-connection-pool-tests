@@ -5,14 +5,50 @@ metadata:
   namespace: default
 spec:
   teamId: "connection-pool"
-  volume:
-    size: 1Gi
-  numberOfInstances: 2
-  users:
-    test:  
-    - superuser
-    - createdb
   databases:
     test: test
+  enable_pod_antiaffinity: true
+  enable_pod_disruption_budget: false
+  enableMasterLoadBalancer: false
+  enableReplicaLoadBalancer: false
+  resource_check_timeout: "15m"
+  numberOfInstances: 2
+  patroni:
+    initdb:
+      data-checksums: "true"
+      encoding: UTF8
+      locale: en_US.UTF-8
+    pg_hba:
+      - hostssl all all 0.0.0.0/0 md5
+      - host    all all 0.0.0.0/0 md5
+      - local all all trust
+      - hostssl all +zalandos 127.0.0.1/32 pam
+      - host all all 127.0.0.1/32 md5
+      - hostssl all +zalandos ::1/128 pam
+      - host all all ::1/128 md5
+      - hostssl replication standby all md5
+      - hostnossl all all all reject
+      - hostssl all +zalandos all pam
+      - hostssl all all all md5
+      - hostssl all all all md5  
+    synchronous_mode: true
+    synchronous_mode_strict: true
   postgresql:
+    parameters:
+      log_statement: all
+      max_connections: "300"
+      shared_buffers: 32MB
     version: "12"
+  resources:
+    limits:
+      cpu: "4"
+      memory: 8Gi
+    requests:
+      cpu: "200m"
+      memory: 512Mi
+  users:
+    test: 
+    - SUPERUSER
+    - CREATEDB
+  volume:
+    size: 10Gi
