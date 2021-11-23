@@ -22,4 +22,4 @@
 
 4. Kill database leader pod with
 
-        $ kubectl delete pod connection-pool-test-0
+        $ kubectl delete pod connection-pool-test-<N>
