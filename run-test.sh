@@ -18,4 +18,5 @@ kubectl wait --for=condition=Ready pod connection-pool-test-0
 kubectl wait --for=condition=Ready pod connection-pool-test-1
 
 kubectl create -f pooltest.yml                                                  #run quarkus test pod
-kubectl wait --for=condition=Ready pod pooltest
+kubectl wait --for=condition=Ready pod pooltest --timeout=300s                  #wait until test pod is ready
+kubectl logs pooltest -f                                                        #log pooltest
