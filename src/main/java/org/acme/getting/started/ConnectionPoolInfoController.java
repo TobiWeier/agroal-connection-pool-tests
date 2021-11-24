@@ -4,6 +4,7 @@ import io.agroal.api.AgroalDataSource;
 import io.agroal.api.configuration.AgroalDataSourceConfiguration;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -115,7 +116,7 @@ public class ConnectionPoolInfoController {
             if (list.isEmpty()) {
                 return 0;
             }
-            return (long)list.get(0)[0];
+            return ((BigInteger)list.get(0)[0]).longValue();
         } catch (Throwable th) {
             th.printStackTrace();
         }
@@ -130,7 +131,7 @@ public class ConnectionPoolInfoController {
             if (list.isEmpty()) {
                 return 0;
             }
-            return (long)list.get(0)[0];
+            return ((BigInteger)list.get(0)[0]).longValue();
         } catch (Throwable th) {
             th.printStackTrace();
         }
@@ -145,7 +146,7 @@ public class ConnectionPoolInfoController {
             if (list.isEmpty()) {
                 return 0;
             }
-            return (long)list.get(0)[0];
+            return ((BigInteger)list.get(0)[0]).longValue();
         } catch (Throwable th) {
             th.printStackTrace();
         }
