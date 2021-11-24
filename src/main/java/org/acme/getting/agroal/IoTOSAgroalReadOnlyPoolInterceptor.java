@@ -40,11 +40,11 @@ public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor
                      System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found readOnly Connection. No Flush-Action configured");                    
                  } else if (flushMode.equals(ReadOnlyFlushMode.SINGLE_CONNECTION) && connection instanceof ConnectionWrapper) {
                     System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush single Connection ...");                    
-                    ConnectionWrapper  cw = (ConnectionWrapper)connection;                    
-                    flushSingleConnection(cw);
+//                    ConnectionWrapper  cw = (ConnectionWrapper)connection;                    
+//                    flushSingleConnection(cw);
                 } else {    
                     System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush ConnectionPool ...");
-                    flushCompletePool();
+//                    flushCompletePool();
                 }
             }
         } catch (Exception ex) {
