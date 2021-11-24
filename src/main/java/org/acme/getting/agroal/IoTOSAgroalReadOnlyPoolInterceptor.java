@@ -14,42 +14,20 @@ public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor
 
     final AtomicLong readOnlyConnectionCnt = new AtomicLong();
 
-    public enum ReadOnlyFlushMode {
-        NONE, COMPLETE_POOL, SINGLE_CONNECTION
-    };
-
-    private ReadOnlyFlushMode flushMode = ReadOnlyFlushMode.COMPLETE_POOL;
-
-    public ReadOnlyFlushMode getFlushMode() {
-        return flushMode;
-    }
-
-    public void setFlushMode(ReadOnlyFlushMode aFlushMode) {
-        flushMode = aFlushMode;
-    }
-    
     @Override
-    public void onConnectionReturn(Connection connection) {
-        String action = "check isReadOnly-Connection";
+    public void onConnectionAcquire(Connection connection) {
         try {
             if (connection.isClosed()) {
-                System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unclosed Connection. Flush single ConnectionPool ...");
+                System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionAcquire() Got closed Connection....");
             } else if (connection.isReadOnly()) {
                 readOnlyConnectionCnt.incrementAndGet();
-                if (flushMode.equals(ReadOnlyFlushMode.NONE)) {
-                    System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found readOnly Connection. No Flush-Action configured");
-                } else if (flushMode.equals(ReadOnlyFlushMode.SINGLE_CONNECTION) && connection instanceof ConnectionWrapper) {
-                    System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush single Connection ...");
-                } else {
-                    System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush ConnectionPool ...");
-                }
+                System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionAcquire() Got readOnly Connection...");
             }
         } catch (Exception ex) {
-            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn()::Got Exception during " + action
-              + ". Msg:" + ex.getMessage());
+            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionAcquire():: Exception occured. Msg:" + ex.getMessage());
         }
     }
-
+    
     @Gauge(
       absolute = true,
       name = "IoTOSAgroalReadOnlyPoolInterceptor.getTotalReadOnlyConnection",
