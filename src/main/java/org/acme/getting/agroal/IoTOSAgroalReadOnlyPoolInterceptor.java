@@ -32,29 +32,17 @@ public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor
 
     @Override
     public void onConnectionReturn(Connection connection) {
-//        String action = "check isReadOnly-Connection";
-//        try {
-//            if (connection.isClosed()) {
-//                System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unclosed Connection. Flush single ConnectionPool ...");
-////                ConnectionWrapper cw = (ConnectionWrapper) connection;
-////                flushSingleConnection(cw);
-//            } else if (connection.isReadOnly() ) {
-//                readOnlyConnectionCnt.incrementAndGet();
-//                 if (flushMode.equals(ReadOnlyFlushMode.NONE)) {
-//                     System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found readOnly Connection. No Flush-Action configured");                    
-//                 } else if (flushMode.equals(ReadOnlyFlushMode.SINGLE_CONNECTION) && connection instanceof ConnectionWrapper) {
-//                    System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush single Connection ...");                    
-////                    ConnectionWrapper  cw = (ConnectionWrapper)connection;                    
-////                    flushSingleConnection(cw);
-//                } else {    
-//                    System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush ConnectionPool ...");
-////                    flushCompletePool();
-//                }
-//            }
-//        } catch (Exception ex) {
-//            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn()::Got Exception during "  + action 
-//                    +". Msg:" + ex.getMessage());
-//        }
+        String action = "check isReadOnly-Connection";
+        try {
+            if (connection.isClosed()) {
+                System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unclosed Connection. Flush single ConnectionPool ...");
+//                ConnectionWrapper cw = (ConnectionWrapper) connection;
+//                flushSingleConnection(cw);
+            }
+        } catch (Exception ex) {
+            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn()::Got Exception during "  + action 
+                    +". Msg:" + ex.getMessage());
+        }
     }
     
     
