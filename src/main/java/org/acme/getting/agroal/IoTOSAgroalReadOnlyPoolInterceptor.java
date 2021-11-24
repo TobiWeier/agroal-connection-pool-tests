@@ -1,11 +1,15 @@
 package org.acme.getting.agroal;
 
+import io.agroal.api.AgroalDataSource;
 import io.agroal.api.AgroalPoolInterceptor;
+import io.agroal.pool.ConnectionHandler;
 import io.agroal.pool.wrapper.ConnectionWrapper;
 import io.quarkus.arc.Unremovable;
 import java.sql.Connection;
 import java.util.concurrent.atomic.AtomicLong;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.CDI;
+import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 
 @Unremovable
@@ -55,44 +59,42 @@ public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor
         }
     }
 
-//    @Counted(
-//        absolute = true,
-//        name = "IoTOSAgroalReadOnlyPoolInterceptor.flushSingleConnection", 
-//        displayName = "Amount of single flushed Connections triggered by returning a readOnly Connection")    
-//    public void flushSingleConnection(ConnectionWrapper cw) {
-//        String action = "check ConnectionWrapper";
-//        try {
-//            ConnectionHandler  ch = cw.getHandler();
-//            action = "set ReadOnly Connection to be flushed";
-//            ch.setFlushOnly();
-//
-//        } catch (Exception ex) {
-//            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.flushSingleConnection()::Got Exception during "  + action 
-//                    +". Msg:" + ex.getMessage());
-//        }
-//    }
-//
-//    
-//    
-//    @Counted(
-//        absolute = true,
-//        name = "IoTOSAgroalReadOnlyPoolInterceptor.flushCompletePool", 
-//        displayName = "Amount of graceful flushes of the complete ConnectionPool triggered by returning a readOnly Connection")    
-//    public void flushCompletePool() {
-//        String action = "check isReadOnly-Connection";
-//        try {
-//            action = "prepare GRACEFUL-Flush of ConnectionPool";
-//            AgroalDataSource ads = CDI.current().select(AgroalDataSource.class).get();
-//            if (ads != null) {
-//                ads.flush(AgroalDataSource.FlushMode.GRACEFUL);                
-//                action = "GRACEFUL-Flush of ConnectionPool";
-//            }
-//        } catch (Exception ex) {
-//            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.flushCompletePool()::Got Exception during "  + action 
-//                    +". Msg:" + ex.getMessage());
-//        }
-//    }    
-//
+    @Counted(
+      absolute = true,
+      name = "IoTOSAgroalReadOnlyPoolInterceptor.flushSingleConnection",
+      displayName = "Amount of single flushed Connections triggered by returning a readOnly Connection")
+    public void flushSingleConnection(ConnectionWrapper cw) {
+        String action = "check ConnectionWrapper";
+        try {
+            ConnectionHandler ch = cw.getHandler();
+            action = "set ReadOnly Connection to be flushed";
+            ch.setFlushOnly();
+
+        } catch (Exception ex) {
+            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.flushSingleConnection()::Got Exception during " + action
+              + ". Msg:" + ex.getMessage());
+        }
+    }
+
+    @Counted(
+      absolute = true,
+      name = "IoTOSAgroalReadOnlyPoolInterceptor.flushCompletePool",
+      displayName = "Amount of graceful flushes of the complete ConnectionPool triggered by returning a readOnly Connection")
+    public void flushCompletePool() {
+        String action = "check isReadOnly-Connection";
+        try {
+            action = "prepare GRACEFUL-Flush of ConnectionPool";
+            AgroalDataSource ads = CDI.current().select(AgroalDataSource.class).get();
+            if (ads != null) {
+                ads.flush(AgroalDataSource.FlushMode.GRACEFUL);
+                action = "GRACEFUL-Flush of ConnectionPool";
+            }
+        } catch (Exception ex) {
+            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.flushCompletePool()::Got Exception during " + action
+              + ". Msg:" + ex.getMessage());
+        }
+    }
+
     @Gauge(
       absolute = true,
       name = "IoTOSAgroalReadOnlyPoolInterceptor.getTotalReadOnlyConnection",
