@@ -142,7 +142,7 @@ public class ConnectionPoolInfoController {
     long getActiveCountDB() {
         try {
             List<BigInteger> list = em.createNativeQuery("select count(*) from pg_stat_activity"
-                    + " where application_name = 'pooltest' and state = 'active'").getResultList();
+                    + " where application_name = 'pooltest' and state = 'active' and query not like 'select count(*) from pg_stat_activity where application_name%'").getResultList();
             if (list.isEmpty()) {
                 return 0;
             }
