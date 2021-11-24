@@ -8,7 +8,7 @@
 
 ## steps to reproduce
 
-1. Start database cluster and pool test application
+1. Start minikube with database cluster and pool test application
 
         ./run-test.sh
 
