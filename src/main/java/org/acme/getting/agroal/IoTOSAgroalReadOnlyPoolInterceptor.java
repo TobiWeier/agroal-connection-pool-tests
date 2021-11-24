@@ -1,21 +1,21 @@
-//package org.acme.getting.agroal;
-//
-//import io.agroal.api.AgroalDataSource;
-//import io.agroal.api.AgroalPoolInterceptor;
-//import io.agroal.pool.ConnectionHandler;
-//import io.agroal.pool.wrapper.ConnectionWrapper;
-//import io.quarkus.arc.Unremovable;
-//import java.sql.Connection;
-//import java.util.concurrent.atomic.AtomicLong;
-//import javax.enterprise.context.ApplicationScoped;
-//import javax.enterprise.inject.spi.CDI;
-//import org.eclipse.microprofile.metrics.annotation.Counted;
-//import org.eclipse.microprofile.metrics.annotation.Gauge;
-//
-//@Unremovable
-//@ApplicationScoped
-//public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor {
-//
+package org.acme.getting.agroal;
+
+import io.agroal.api.AgroalDataSource;
+import io.agroal.api.AgroalPoolInterceptor;
+import io.agroal.pool.ConnectionHandler;
+import io.agroal.pool.wrapper.ConnectionWrapper;
+import io.quarkus.arc.Unremovable;
+import java.sql.Connection;
+import java.util.concurrent.atomic.AtomicLong;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.inject.spi.CDI;
+import org.eclipse.microprofile.metrics.annotation.Counted;
+import org.eclipse.microprofile.metrics.annotation.Gauge;
+
+@Unremovable
+@ApplicationScoped
+public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor {
+
 //    final AtomicLong readOnlyConnectionCnt = new AtomicLong();    
 //    
 //    public enum ReadOnlyFlushMode {NONE, COMPLETE_POOL, SINGLE_CONNECTION};
@@ -29,9 +29,9 @@
 //    public void setFlushMode(ReadOnlyFlushMode aFlushMode) {
 //        flushMode = aFlushMode;
 //    }
-//
-//    @Override
-//    public void onConnectionReturn(Connection connection) {
+
+    @Override
+    public void onConnectionReturn(Connection connection) {
 //        String action = "check isReadOnly-Connection";
 //        try {
 //            if (connection.isClosed()) {
@@ -55,9 +55,9 @@
 //            System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn()::Got Exception during "  + action 
 //                    +". Msg:" + ex.getMessage());
 //        }
-//    }
-//    
-//    
+    }
+    
+    
 //    @Counted(
 //        absolute = true,
 //        name = "IoTOSAgroalReadOnlyPoolInterceptor.flushSingleConnection", 
@@ -104,4 +104,4 @@
 //    public Long getTotalReadOnlyConnection() {
 //        return readOnlyConnectionCnt.get();
 //    }  
-//}
+}
