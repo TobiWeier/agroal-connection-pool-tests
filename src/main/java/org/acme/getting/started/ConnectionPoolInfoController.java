@@ -111,12 +111,12 @@ public class ConnectionPoolInfoController {
     @ActivateRequestContext
     long getAvailableCountDB() {
         try {
-            List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
+            List<BigInteger> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                     + " where application_name = 'pooltest'").getResultList();
             if (list.isEmpty()) {
                 return 0;
             }
-            return ((BigInteger)list.get(0)[0]).longValue();
+            return list.get(0).longValue();
         } catch (Throwable th) {
             th.printStackTrace();
         }
@@ -126,12 +126,12 @@ public class ConnectionPoolInfoController {
     @ActivateRequestContext
     long getIdleCountDB() {
         try {
-            List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
+            List<BigInteger> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                     + " where application_name = 'pooltest' and state = 'idle'").getResultList();
             if (list.isEmpty()) {
                 return 0;
             }
-            return ((BigInteger)list.get(0)[0]).longValue();
+            return list.get(0).longValue();
         } catch (Throwable th) {
             th.printStackTrace();
         }
@@ -141,12 +141,12 @@ public class ConnectionPoolInfoController {
     @ActivateRequestContext
     long getActiveCountDB() {
         try {
-            List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
+            List<BigInteger> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                     + " where application_name = 'pooltest' and state = 'active'").getResultList();
             if (list.isEmpty()) {
                 return 0;
             }
-            return ((BigInteger)list.get(0)[0]).longValue();
+            return list.get(0).longValue();
         } catch (Throwable th) {
             th.printStackTrace();
         }
