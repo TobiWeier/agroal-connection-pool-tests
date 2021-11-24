@@ -27,7 +27,7 @@ spec:
       - hostssl all all all md5
       - hostssl all all all md5  
     synchronous_mode: true
-    synchronous_mode_strict: true
+    synchronous_mode_strict: false
   postgresql:
     parameters:
       log_statement: all
