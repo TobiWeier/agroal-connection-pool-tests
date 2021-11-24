@@ -107,27 +107,42 @@ public class ConnectionPoolInfoController {
     }
     
     private long getAvailableCountDB() {
-        List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
-                + " where application_name = 'pooltest'").getResultList();
-        if (list.isEmpty()) {
-            return 0;
+        try {
+            List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
+                    + " where application_name = 'pooltest'").getResultList();
+            if (list.isEmpty()) {
+                return 0;
+            }
+            return (long)list.get(0)[0];
+        } catch (Throwable th) {
+            th.printStackTrace();
         }
-        return (long)list.get(0)[0];
+        return 0;
     }
     private long getIdleCountDB() {
-        List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
-                + " where application_name = 'pooltest' and state = 'idle'").getResultList();
-        if (list.isEmpty()) {
-            return 0;
+        try {
+            List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
+                    + " where application_name = 'pooltest' and state = 'idle'").getResultList();
+            if (list.isEmpty()) {
+                return 0;
+            }
+            return (long)list.get(0)[0];
+        } catch (Throwable th) {
+            th.printStackTrace();
         }
-        return (long)list.get(0)[0];
+        return 0;
     }
     private long getActiveCountDB() {
-        List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
-                + " where application_name = 'pooltest' and state = 'active'").getResultList();
-        if (list.isEmpty()) {
-            return 0;
+        try {
+            List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
+                    + " where application_name = 'pooltest' and state = 'active'").getResultList();
+            if (list.isEmpty()) {
+                return 0;
+            }
+            return (long)list.get(0)[0];
+        } catch (Throwable th) {
+            th.printStackTrace();
         }
-        return (long)list.get(0)[0];
+        return 0;
     }
 }
