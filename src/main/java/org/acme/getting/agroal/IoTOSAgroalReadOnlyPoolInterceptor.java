@@ -34,7 +34,11 @@ public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor
     public void onConnectionReturn(Connection connection) {
         String action = "check isReadOnly-Connection";
         try {
-            if (connection.isReadOnly() ) {
+            if (connection.isClosed()) {
+                System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unclosed Connection. Flush single ConnectionPool ...");
+//                ConnectionWrapper cw = (ConnectionWrapper) connection;
+//                flushSingleConnection(cw);
+            } else if (connection.isReadOnly() ) {
                 readOnlyConnectionCnt.incrementAndGet();
                  if (flushMode.equals(ReadOnlyFlushMode.NONE)) {
                      System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found readOnly Connection. No Flush-Action configured");                    
