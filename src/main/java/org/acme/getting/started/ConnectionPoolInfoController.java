@@ -5,6 +5,7 @@ import io.agroal.api.configuration.AgroalDataSourceConfiguration;
 import io.quarkus.runtime.LaunchMode;
 import io.quarkus.runtime.StartupEvent;
 import java.time.Duration;
+import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
@@ -106,15 +107,27 @@ public class ConnectionPoolInfoController {
     }
     
     private long getAvailableCountDB() {
-        return em.createQuery("select count(*) from pg_stat_activity"
-                + " where application_name = 'pooltest'", Long.class).getSingleResult();
+        List<Object[]> list = em.createQuery("select count(*) from pg_stat_activity"
+                + " where application_name = 'pooltest'").getResultList();
+        if (list.isEmpty()) {
+            return 0;
+        }
+        return (long)list.get(0)[0];
     }
     private long getIdleCountDB() {
-        return em.createQuery("select count(*) from pg_stat_activity"
-                + " where application_name = 'pooltest' and state = 'idle'", Long.class).getSingleResult();
+        List<Object[]> list = em.createQuery("select count(*) from pg_stat_activity"
+                + " where application_name = 'pooltest' and state = 'idle'").getResultList();
+        if (list.isEmpty()) {
+            return 0;
+        }
+        return (long)list.get(0)[0];
     }
     private long getActiveCountDB() {
-        return em.createQuery("select count(*) from pg_stat_activity"
-                + " where application_name = 'pooltest' and state = 'active'", Long.class).getSingleResult();
+        List<Object[]> list = em.createQuery("select count(*) from pg_stat_activity"
+                + " where application_name = 'pooltest' and state = 'active'").getResultList();
+        if (list.isEmpty()) {
+            return 0;
+        }
+        return (long)list.get(0)[0];
     }
 }
