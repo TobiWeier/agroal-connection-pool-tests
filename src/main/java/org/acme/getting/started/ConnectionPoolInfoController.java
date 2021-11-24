@@ -7,6 +7,7 @@ import io.quarkus.runtime.StartupEvent;
 import java.time.Duration;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.context.control.ActivateRequestContext;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -106,7 +107,8 @@ public class ConnectionPoolInfoController {
         }
     }
     
-    private long getAvailableCountDB() {
+    @ActivateRequestContext
+    long getAvailableCountDB() {
         try {
             List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                     + " where application_name = 'pooltest'").getResultList();
@@ -119,7 +121,9 @@ public class ConnectionPoolInfoController {
         }
         return 0;
     }
-    private long getIdleCountDB() {
+
+    @ActivateRequestContext
+    long getIdleCountDB() {
         try {
             List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                     + " where application_name = 'pooltest' and state = 'idle'").getResultList();
@@ -132,7 +136,9 @@ public class ConnectionPoolInfoController {
         }
         return 0;
     }
-    private long getActiveCountDB() {
+
+    @ActivateRequestContext
+    long getActiveCountDB() {
         try {
             List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                     + " where application_name = 'pooltest' and state = 'active'").getResultList();
