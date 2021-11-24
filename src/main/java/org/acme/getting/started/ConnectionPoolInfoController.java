@@ -12,6 +12,7 @@ import javax.enterprise.context.control.ActivateRequestContext;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
 @ApplicationScoped
 public class ConnectionPoolInfoController {
@@ -108,6 +109,7 @@ public class ConnectionPoolInfoController {
         }
     }
     
+    @Transactional
     @ActivateRequestContext
     long getAvailableCountDB() {
         try {
@@ -123,6 +125,7 @@ public class ConnectionPoolInfoController {
         return 0;
     }
 
+    @Transactional
     @ActivateRequestContext
     long getIdleCountDB() {
         try {
@@ -138,6 +141,7 @@ public class ConnectionPoolInfoController {
         return 0;
     }
 
+    @Transactional
     @ActivateRequestContext
     long getActiveCountDB() {
         try {

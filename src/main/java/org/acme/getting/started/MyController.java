@@ -81,6 +81,7 @@ public class MyController {
         return entity;
     }
     
+    @Transactional
     @Scheduled(cron = "*/5 * * * * ?")
     @Timed(name = "checksTimer", description = "A measure of how long it takes to perform select.", unit = MetricUnits.MILLISECONDS)
     public void scheduleSelect() {
