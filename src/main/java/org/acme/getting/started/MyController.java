@@ -31,7 +31,6 @@ public class MyController {
     private AtomicLong selects = new AtomicLong();
     private AtomicLong selectFailures = new AtomicLong();
     
-    private long lostRecords;
    
     @Scheduled(cron = "*/1 * * * * ?")
     public void scheduleInsert() {
@@ -92,11 +91,6 @@ public class MyController {
         } catch (Throwable th) {
             selectFailures.incrementAndGet();
         }
-        try {
-            lostRecords = em.createQuery("select count(e) from MyEntity e where e.lastId not in (select f.id from MyEntity f)", Long.class).setMaxResults(1).getResultList().get(0);
-        } catch (Throwable th) {
-            
-        }
     }
  
     @Gauge(name = "inserts", unit = MetricUnits.NONE, description = "Number of successful inserts")
@@ -119,8 +113,4 @@ public class MyController {
         return selectFailures.get();
     }
     
-    @Gauge(name = "lostRecords", unit = MetricUnits.NONE, description = "Number of lost records")
-    public Long getLostRecords() {
-        return lostRecords;
-    }
 }
