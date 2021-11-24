@@ -1,16 +1,10 @@
 package org.acme.getting.agroal;
 
-import io.agroal.api.AgroalDataSource;
 import io.agroal.api.AgroalPoolInterceptor;
-import io.agroal.pool.ConnectionHandler;
 import io.agroal.pool.wrapper.ConnectionWrapper;
 import io.quarkus.arc.Unremovable;
 import java.sql.Connection;
-import java.util.concurrent.atomic.AtomicLong;
 import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.spi.CDI;
-import org.eclipse.microprofile.metrics.annotation.Counted;
-import org.eclipse.microprofile.metrics.annotation.Gauge;
 
 @Unremovable
 @ApplicationScoped
@@ -18,17 +12,17 @@ public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor
 
 //    final AtomicLong readOnlyConnectionCnt = new AtomicLong();    
 //    
-//    public enum ReadOnlyFlushMode {NONE, COMPLETE_POOL, SINGLE_CONNECTION};
-//    
-//    private ReadOnlyFlushMode flushMode = ReadOnlyFlushMode.COMPLETE_POOL;
-//    
-//    public ReadOnlyFlushMode getFlushMode() {
-//        return flushMode;
-//    }
-//    
-//    public void setFlushMode(ReadOnlyFlushMode aFlushMode) {
-//        flushMode = aFlushMode;
-//    }
+    public enum ReadOnlyFlushMode {NONE, COMPLETE_POOL, SINGLE_CONNECTION};
+    
+    private ReadOnlyFlushMode flushMode = ReadOnlyFlushMode.COMPLETE_POOL;
+    
+    public ReadOnlyFlushMode getFlushMode() {
+        return flushMode;
+    }
+    
+    public void setFlushMode(ReadOnlyFlushMode aFlushMode) {
+        flushMode = aFlushMode;
+    }
 
     @Override
     public void onConnectionReturn(Connection connection) {
@@ -38,6 +32,17 @@ public class IoTOSAgroalReadOnlyPoolInterceptor implements AgroalPoolInterceptor
                 System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unclosed Connection. Flush single ConnectionPool ...");
 //                ConnectionWrapper cw = (ConnectionWrapper) connection;
 //                flushSingleConnection(cw);
+            } else if (connection.isReadOnly() ) {
+                 if (flushMode.equals(ReadOnlyFlushMode.NONE)) {
+                     System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found readOnly Connection. No Flush-Action configured");                    
+                 } else if (flushMode.equals(ReadOnlyFlushMode.SINGLE_CONNECTION) && connection instanceof ConnectionWrapper) {
+                    System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush single Connection ...");                    
+//                    ConnectionWrapper  cw = (ConnectionWrapper)connection;                    
+//                    flushSingleConnection(cw);
+                } else {    
+                    System.out.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn() Found unexcpected readOnly Connection. Flush ConnectionPool ...");
+//                    flushCompletePool();
+                }
             }
         } catch (Exception ex) {
             System.err.println("IoTOSAgroalReadOnlyPoolInterceptor.onConnectionReturn()::Got Exception during "  + action 
