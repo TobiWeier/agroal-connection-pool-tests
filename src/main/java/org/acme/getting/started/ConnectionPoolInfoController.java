@@ -107,7 +107,7 @@ public class ConnectionPoolInfoController {
     }
     
     private long getAvailableCountDB() {
-        List<Object[]> list = em.createQuery("select count(*) from pg_stat_activity"
+        List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                 + " where application_name = 'pooltest'").getResultList();
         if (list.isEmpty()) {
             return 0;
@@ -115,7 +115,7 @@ public class ConnectionPoolInfoController {
         return (long)list.get(0)[0];
     }
     private long getIdleCountDB() {
-        List<Object[]> list = em.createQuery("select count(*) from pg_stat_activity"
+        List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                 + " where application_name = 'pooltest' and state = 'idle'").getResultList();
         if (list.isEmpty()) {
             return 0;
@@ -123,7 +123,7 @@ public class ConnectionPoolInfoController {
         return (long)list.get(0)[0];
     }
     private long getActiveCountDB() {
-        List<Object[]> list = em.createQuery("select count(*) from pg_stat_activity"
+        List<Object[]> list = em.createNativeQuery("select count(*) from pg_stat_activity"
                 + " where application_name = 'pooltest' and state = 'active'").getResultList();
         if (list.isEmpty()) {
             return 0;
