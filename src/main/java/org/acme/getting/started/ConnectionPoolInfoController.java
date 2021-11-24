@@ -8,20 +8,24 @@ import java.time.Duration;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
 @ApplicationScoped
 public class ConnectionPoolInfoController {
-
+    
     @Inject
     ConnectionPoolMetricProvider provider;
-
+    
     @Inject
     AgroalDataSource ads;
-
+    
+    @Inject
+    EntityManager em;
+    
     private ConnectionPoolConfig config = null;
-
+    
     final Object configLock = new Object();
-
+    
     public ConnectionPoolConfig getConfig() {
         synchronized (configLock) {
             if (config == null) {
@@ -39,16 +43,18 @@ public class ConnectionPoolInfoController {
     public ConnectionPoolConfig reloadConnectionPoolConfiguration() {
         return (config == null) ? getConfig() : config.update(ads.getConfiguration());
     }
-
+    
     public ConnectionPoolMetrics getConnectionPoolMetrics() {
         ConnectionPoolMetrics metrics = null;
         AgroalDataSourceConfiguration cfg = ads.getConfiguration();
         if (cfg.metricsEnabled()) {
-            metrics = new ConnectionPoolMetrics(ads.getMetrics());
+            
+            metrics = new ConnectionPoolMetrics(ads.getMetrics(), 
+                    getAvailableCountDB(), getIdleCountDB(), getActiveCountDB());
         }
         return metrics;
     }
-
+    
     public boolean enableConnectionPoolMetrics(boolean aEnable) {
         AgroalDataSourceConfiguration cfg = ads.getConfiguration();
         if (cfg.metricsEnabled() != aEnable) {
@@ -61,7 +67,7 @@ public class ConnectionPoolInfoController {
         }
         return cfg.metricsEnabled();
     }
-
+    
     public void setMinPoolSize(int minSize) {
         synchronized (configLock) {
             AgroalDataSourceConfiguration cfg = ads.getConfiguration();
@@ -69,7 +75,7 @@ public class ConnectionPoolInfoController {
             getConfig().update(cfg);
         }
     }
-
+    
     public void setMaxPoolSize(int maxSize) {
         synchronized (configLock) {
             AgroalDataSourceConfiguration cfg = ads.getConfiguration();
@@ -77,7 +83,7 @@ public class ConnectionPoolInfoController {
             getConfig().update(cfg);
         }
     }
-
+    
     public void setAcquisitionTimeout(Duration timeOut) {
         synchronized (configLock) {
             AgroalDataSourceConfiguration cfg = ads.getConfiguration();
@@ -89,7 +95,7 @@ public class ConnectionPoolInfoController {
     //automatic expose connectionPool metrics only if is this configured via application Properties
     @Inject
     LaunchMode launchMode;
-
+    
     void onStart(@Observes StartupEvent ev) {
         if (!launchMode.equals(LaunchMode.TEST)) {
             reloadConnectionPoolConfiguration();
@@ -97,5 +103,18 @@ public class ConnectionPoolInfoController {
                 provider.exposeMetrics();
             }
         }
+    }
+    
+    private long getAvailableCountDB() {
+        return em.createQuery("select count(*) from pg_stat_activity"
+                + " where application_name = 'pooltest'", Long.class).getSingleResult();
+    }
+    private long getIdleCountDB() {
+        return em.createQuery("select count(*) from pg_stat_activity"
+                + " where application_name = 'pooltest' and state = 'idle'", Long.class).getSingleResult();
+    }
+    private long getActiveCountDB() {
+        return em.createQuery("select count(*) from pg_stat_activity"
+                + " where application_name = 'pooltest' and state = 'active'", Long.class).getSingleResult();
     }
 }

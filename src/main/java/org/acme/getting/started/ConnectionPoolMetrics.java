@@ -26,8 +26,12 @@ public class ConnectionPoolMetrics {
     private final Duration creationTimeTotal;
     private final Duration creationTimeMax;
     private final Duration creationTimeAverage;
+    
+    private final long availableCountDB;
+    private final long idleCountDB;
+    private final long activeCountDB;
 
-    public ConnectionPoolMetrics(AgroalDataSourceMetrics aMetrics) {
+    public ConnectionPoolMetrics(AgroalDataSourceMetrics aMetrics, long aAvailableCountDb, long aIdelCountDB, long aActiveCountDB) {
         acquireCount = aMetrics.acquireCount();
         availableCount = aMetrics.availableCount();
         activeCount = aMetrics.activeCount();
@@ -45,6 +49,9 @@ public class ConnectionPoolMetrics {
         leakDetectionCount= aMetrics.leakDetectionCount();
         maxUsedCount = aMetrics.maxUsedCount();
         reapCount = aMetrics.reapCount();
+        availableCountDB = aAvailableCountDb;
+        idleCountDB = aIdelCountDB;
+        activeCountDB = aActiveCountDB;
     }
 
     public long getAcquireCount() {
@@ -115,6 +122,18 @@ public class ConnectionPoolMetrics {
         return creationTimeAverage;
     }
 
+    public long getAvailableCountDB() {
+        return availableCountDB;
+    }
+
+    public long getIdleCountDB() {
+        return idleCountDB;
+    }
+
+    public long getActiveCountDB() {
+        return activeCountDB;
+    }
+    
     @Override
     public String toString() {
         return "ConnectionPoolMetrics{" 
@@ -134,6 +153,10 @@ public class ConnectionPoolMetrics {
                 + ", blockingTimeTotal=" + blockingTimeTotal 
                 + ", creationTimeTotal=" + creationTimeTotal 
                 + ", creationTimeMax=" + creationTimeMax 
-                + ", creationTimeAverage=" + creationTimeAverage + '}';
+                + ", creationTimeAverage=" + creationTimeAverage 
+                + ", availableCountDB=" + availableCountDB 
+                + ", idleCountDB=" + idleCountDB 
+                + ", activeCountDB=" + activeCountDB 
+                + '}';
     }
 }
