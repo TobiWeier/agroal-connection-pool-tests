@@ -1,6 +1,7 @@
 package org.acme.getting.started;
 
 import io.quarkus.scheduler.Scheduled;
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -77,8 +78,11 @@ public class MyController {
         Random random = new Random(System.currentTimeMillis());
         MyEntity entity = new MyEntity().setName(UUID.randomUUID().toString());
         try {
-            Thread.sleep((long)random.nextInt(100));
             em.persist(entity);
+            for (int i=0; i<10; i++) {
+                random.nextInt(10);
+                int size = em.createQuery("select count(e) from MyEntity e", BigInteger.class).getSingleResult().intValue();
+            }
             inserts.incrementAndGet();
         } catch (Throwable th) {
             insertFailures.incrementAndGet();
