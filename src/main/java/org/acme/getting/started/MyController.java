@@ -38,7 +38,6 @@ public class MyController {
         long start = System.currentTimeMillis();
         while (true) {
             try {
-                Thread.sleep(10L);
                 List<Future<Object>> invokeAll = Executors.newFixedThreadPool(1).invokeAll(List.of(
                   () -> persistEntity(),
                   () -> persistEntity(),
@@ -75,8 +74,10 @@ public class MyController {
 
     @Transactional
     public MyEntity persistEntity() {
+        Random random = new Random(System.currentTimeMillis());
         MyEntity entity = new MyEntity().setName(UUID.randomUUID().toString());
         try {
+            Thread.sleep((long)random.nextInt(100));
             em.persist(entity);
             inserts.incrementAndGet();
         } catch (Throwable th) {
