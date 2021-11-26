@@ -81,7 +81,7 @@ public class MyController {
             em.persist(entity);
             for (int i=0; i<10; i++) {
                 random.nextInt(10);
-                int size = em.createQuery("select count(e) from MyEntity e", BigInteger.class).getSingleResult().intValue();
+                long size = em.createQuery("select count(e) from MyEntity e", Long.class).getSingleResult();
             }
             inserts.incrementAndGet();
         } catch (Throwable th) {
