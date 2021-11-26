@@ -2,6 +2,7 @@ package org.acme.getting.started;
 
 import io.quarkus.scheduler.Scheduled;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
@@ -34,12 +35,16 @@ public class MyController {
    
     @Scheduled(cron = "*/1 * * * * ?")
     public void scheduleInsert() {
-        
         long start = System.currentTimeMillis();
         while (true) {
             try {
                 Thread.sleep(100L);
-                List<Future<Object>> invokeAll = Executors.newFixedThreadPool(5).invokeAll(List.of(
+                List<Future<Object>> invokeAll = Executors.newFixedThreadPool(1).invokeAll(List.of(
+                  () -> persistEntity(),
+                  () -> persistEntity(),
+                  () -> persistEntity(),
+                  () -> persistEntity(),
+                  () -> persistEntity(),
                   () -> persistEntity(),
                   () -> persistEntity(),
                   () -> persistEntity(),
@@ -82,15 +87,22 @@ public class MyController {
     }
     
     @Transactional
-    @Scheduled(cron = "*/5 * * * * ?")
+    @Scheduled(cron = "*/1 * * * * ?")
     @Timed(name = "checksTimer", description = "A measure of how long it takes to perform select.", unit = MetricUnits.MILLISECONDS)
     public void scheduleSelect() {
-        try {
-            Thread.sleep(100L);
-            em.createQuery("select e from MyEntity e order by e.name asc, e.created desc").setMaxResults(1000).getResultList();
-            selects.incrementAndGet();
-        } catch (Throwable th) {
-            selectFailures.incrementAndGet();
+        long start = System.currentTimeMillis();
+        Random random = new Random(start);
+        while (true) {
+            try {
+                Thread.sleep(10L);
+                em.createQuery("select e from MyEntity e order by e.name " + (random.nextBoolean() ? "asc" : "desc") + ", e.created " + (random.nextBoolean() ? "asc" : "desc")).setMaxResults(1000).getResultList();
+                selects.incrementAndGet();
+            } catch (Throwable th) {
+                selectFailures.incrementAndGet();
+            }
+            if (System.currentTimeMillis() > (start + 1000L)) {
+                break;
+            }
         }
     }
  
