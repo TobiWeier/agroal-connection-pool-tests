@@ -38,7 +38,7 @@ public class MyController {
         long start = System.currentTimeMillis();
         while (true) {
             try {
-                Thread.sleep(100L);
+                Thread.sleep(10L);
                 List<Future<Object>> invokeAll = Executors.newFixedThreadPool(1).invokeAll(List.of(
                   () -> persistEntity(),
                   () -> persistEntity(),
